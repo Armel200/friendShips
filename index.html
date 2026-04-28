@@ -3,139 +3,314 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Ma Valentine 💖</title>
-
-  <!-- Tailwind -->
+  <title>Veux-tu être mon amie ? 💛</title>
+  
+  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --friend-yellow: #FFD166;
+      --friend-blue: #A8DADC;
+      --friend-purple: #BDB2FF;
+      --friend-pink: #FF9F9F;
+      --friend-mint: #9BF6FF;
+    }
+
+    * { font-family: 'Quicksand', sans-serif; }
+    
+    body {
+      background: linear-gradient(135deg, #FFF5E6, #FFE6F0, #E6F0FF, #F0E6FF);
+      background-size: 400% 400%;
+      animation: gradientShift 12s ease infinite;
+      overflow: hidden;
+    }
+
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* Floating Background Blobs */
+    .blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(60px);
+      opacity: 0.5;
+      animation: floatBlob 8s ease-in-out infinite alternate;
+    }
+    .blob-1 { width: 300px; height: 300px; background: var(--friend-yellow); top: -50px; left: -50px; animation-delay: 0s; }
+    .blob-2 { width: 250px; height: 250px; background: var(--friend-purple); bottom: -40px; right: -40px; animation-delay: 2s; }
+    .blob-3 { width: 200px; height: 200px; background: var(--friend-blue); top: 40%; left: 60%; animation-delay: 4s; }
+
+    @keyframes floatBlob {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(30px, -30px) scale(1.1); }
+    }
+
+    /* Glass Card */
+    .glass-card {
+      background: rgba(255, 255, 255, 0.65);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Buttons */
+    .btn-oui {
+      background: linear-gradient(135deg, var(--friend-yellow), #FFB703);
+      color: #2D3142;
+      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      box-shadow: 0 4px 15px rgba(255, 209, 102, 0.4);
+    }
+    .btn-oui:hover {
+      box-shadow: 0 6px 20px rgba(255, 209, 102, 0.6);
+      filter: brightness(1.05);
+    }
+
+    .btn-non {
+      background: rgba(255, 255, 255, 0.8);
+      color: #6B7280;
+      border: 2px solid #E5E7EB;
+      transition: all 0.3s ease;
+    }
+    .btn-non:hover {
+      background: #F3F4F6;
+      border-color: #D1D5DB;
+    }
+
+    /* Floating Emojis Background */
+    .float-emoji {
+      position: absolute;
+      bottom: -40px;
+      animation: floatUp linear forwards;
+      pointer-events: none;
+      user-select: none;
+    }
+    @keyframes floatUp {
+      to { transform: translateY(-120vh) rotate(360deg); opacity: 0; }
+    }
+
+    /* Modal */
+    .modal-overlay {
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(8px);
+      opacity: 0; visibility: hidden;
+      transition: all 0.4s ease;
+    }
+    .modal-overlay.active { opacity: 1; visibility: visible; }
+    
+    .modal-content {
+      transform: scale(0.8) translateY(30px);
+      opacity: 0;
+      transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .modal-overlay.active .modal-content {
+      transform: scale(1) translateY(0);
+      opacity: 1;
+    }
+
+    /* Confetti */
+    .confetti {
+      position: absolute;
+      width: 8px; height: 8px;
+      border-radius: 2px;
+      animation: confettiFall linear forwards;
+    }
+    @keyframes confettiFall {
+      0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+    }
+
+    /* Pulse animation for Oui */
+    @keyframes gentlePulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(255, 209, 102, 0.4); }
+      50% { box-shadow: 0 0 0 12px rgba(255, 209, 102, 0); }
+    }
+    .pulse-glow { animation: gentlePulse 2s infinite; }
+  </style>
 </head>
 
-<body class="relative min-h-screen bg-gradient-to-br from-pink-500 to-rose-400 flex items-center justify-center px-4 overflow-hidden">
+<body class="min-h-screen flex items-center justify-center px-4 relative">
 
-  <!-- AUDIO -->
-  <audio id="loveMusic" loop>
-    <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_5c3c1b45c0.mp3" type="audio/mpeg">
-  </audio>
+  <!-- Background Blobs -->
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
 
-  <!-- CONTENU PRINCIPAL -->
-  <div class="w-full max-w-md bg-white/20 backdrop-blur-lg rounded-2xl p-6 text-center text-white shadow-xl">
-    <h1 class="text-2xl sm:text-3xl font-bold mb-4">
-      💘 Veux-tu être ma Valentine ? 💘
+  <!-- Floating Emojis Container -->
+  <div id="bgEmojis" class="fixed inset-0 pointer-events-none z-0"></div>
+
+  <!-- Main Card -->
+  <main class="glass-card w-full max-w-lg rounded-3xl p-8 text-center relative z-10">
+    <div class="text-5xl mb-4 animate-bounce">🦋</div>
+    <h1 class="text-3xl sm:text-4xl font-bold text-gray-800 mb-3 leading-tight">
+      would you like to be my friend  🥱❓
     </h1>
-
-    <p class="mb-6 text-lg">
-      <span class="font-semibold">💌 Mon amour</span>,
-      veux-tu partager ce mois de l’amour avec moi ?
+    <p class="text-gray-600 mb-8 text-lg leading-relaxed">
+      J'aimerais beaucoup qu'on partage des rires, des discussions et des souvenirs ensemble. <br>
+      <span class="font-semibold text-gray-700">Alors... qu'en dis-tu ?</span>
     </p>
 
-    <div class="relative flex flex-col sm:flex-row gap-4 justify-center">
-
+    <div class="flex flex-col sm:flex-row gap-4 justify-center items-center relative min-h-[60px]">
       <!-- OUI -->
-      <button
-        id="yesBtn"
-        onclick="showLoveAndRedirect()"
-        class="bg-red-600 hover:bg-red-700 transition text-white font-semibold py-3 px-6 rounded-full text-lg w-full sm:w-1/2 z-10"
-      >
-        OUI 💖
+      <button id="yesBtn" onclick="acceptFriendship()" class="btn-oui font-bold py-3 px-8 rounded-full text-lg z-10 pulse-glow">
+        OUI 💛
       </button>
 
       <!-- NON -->
-      <button
-        id="noBtn"
-        onmouseenter="moveNoBtn()"
-        onclick="growYes()"
-        class="bg-white text-red-600 font-semibold py-3 px-6 rounded-full text-lg w-full sm:w-1/2"
-      >
+      <button id="noBtn" onmouseenter="escapeNoBtn()" onclick="refuseFriendship()" class="btn-non font-semibold py-3 px-8 rounded-full text-lg z-10">
         NON 😅
       </button>
     </div>
-  </div>
 
-  <!-- OVERLAY -->
-  <div id="overlay" class="fixed inset-0 bg-black/70 hidden z-40"></div>
+    <p id="hintText" class="text-sm text-gray-400 mt-6 h-5 transition-all duration-300"></p>
+  </main>
 
-  <!-- MODAL -->
-  <div id="loveModal" class="fixed inset-0 hidden z-50 flex items-center justify-center px-4">
-    <div class="relative w-full max-w-md bg-gradient-to-br from-pink-500 to-rose-400 rounded-2xl p-8 text-center text-white shadow-2xl overflow-hidden">
-      <h2 class="text-3xl font-bold mb-3">
-        💖 Merci mon amour 💖
-      </h2>
-      <p class="text-lg mb-4">
-        Tu viens de rendre mon cœur le plus heureux du monde 🌹
+  <!-- Success Modal -->
+  <div id="successModal" class="modal-overlay fixed inset-0 z-50 flex items-center justify-center px-4">
+    <div class="modal-content glass-card w-full max-w-md rounded-3xl p-8 text-center relative overflow-hidden">
+      <div class="text-6xl mb-4">🥳💛✨</div>
+      <h2 class="text-3xl font-bold text-gray-800 mb-3">T'avais pas trop le choix d'toute facon</h2>
+      <p class="text-gray-600 mb-6 text-lg">
+        De toute facon je savais que tu allais accepter 🌸<br>
+        Prépare-toi pour plein de beaux moments !
       </p>
-
-      <!-- Animations -->
-      <div id="animations" class="absolute inset-0 pointer-events-none"></div>
+      <button onclick="closeModal()" class="bg-gradient-to-r from-yellow-400 to-orange-400 text-white font-bold py-3 px-8 rounded-full shadow-lg hover:shadow-xl transition-all hover:-translate-y-1">
+        C'est parti ! 🚀
+      </button>
+      <div id="confettiContainer" class="absolute inset-0 pointer-events-none overflow-hidden"></div>
     </div>
   </div>
 
-  <!-- STYLES ANIMATIONS -->
-  <style>
-    @keyframes floatUp {
-      to {
-        transform: translateY(-120vh);
-        opacity: 0;
-      }
-    }
-    .float {
-      position: absolute;
-      bottom: -20px;
-      animation: floatUp linear forwards;
-    }
-  </style>
+  <!-- Audio (optional, triggered on click) -->
+  <audio id="friendMusic" preload="auto">
+    <source src="https://cdn.pixabay.com/download/audio/2022/10/18/audio_2956a1b63a.mp3" type="audio/mpeg">
+  </audio>
 
-  <!-- SCRIPT -->
   <script>
-    let scale = 1;
+    // ===== VARIABLES =====
+    let yesScale = 1;
+    let noClickCount = 0;
+    const noMessages = [
+      "T'es sûre ? 🥺",
+      "Réfléchis bien... 💭",
+      "Le Oui grossit ! 👀",
+      "Il devient énorme ! 😳",
+      "Dernière chance ! 🏃‍♀️",
+      "OK... mais le Oui t'attend 💛"
+    ];
+    const emojis = ['🦋', '✨', '🌸', '💛', '🌈', '🍭', '🎀', '🌼', '🤝', '🫶'];
 
-    function growYes() {
-      scale += 0.15;
-      if (scale > 3.2) scale = 3.2;
-      document.getElementById("yesBtn").style.transform = `scale(${scale})`;
+    // ===== BACKGROUND FLOATING EMOJIS =====
+    function spawnBgEmoji() {
+      const container = document.getElementById('bgEmojis');
+      const el = document.createElement('div');
+      el.className = 'float-emoji';
+      el.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+      el.style.left = Math.random() * 100 + '%';
+      el.style.fontSize = (Math.random() * 16 + 18) + 'px';
+      el.style.animationDuration = (Math.random() * 4 + 5) + 's';
+      el.style.opacity = Math.random() * 0.5 + 0.3;
+      container.appendChild(el);
+      setTimeout(() => el.remove(), 9000);
+    }
+    setInterval(spawnBgEmoji, 600);
+
+    // ===== NON BUTTON ESCAPE (Hover) =====
+    function escapeNoBtn() {
+      const btn = document.getElementById('noBtn');
+      const card = btn.closest('.glass-card');
+      const cardRect = card.getBoundingClientRect();
+      const btnRect = btn.getBoundingClientRect();
+
+      // Calculate safe boundaries inside the card
+      const maxX = cardRect.width - btnRect.width - 40;
+      const maxY = 60; // Keep it near the button row area
+      const randX = Math.random() * maxX - (maxX / 2);
+      const randY = Math.random() * maxY - (maxY / 2);
+
+      btn.style.transform = `translate(${randX}px, ${randY}px)`;
+      btn.style.transition = 'transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)';
     }
 
-    function moveNoBtn() {
-      const noBtn = document.getElementById("noBtn");
-      const x = Math.random() * 120 - 10;
-      const y = Math.random() * 120 - 10;
-      noBtn.style.transform = `translate(${x}px, ${y}px)`;
-    }
+    // ===== NON BUTTON CLICK (Grow Oui + Messages) =====
+    function refuseFriendship() {
+      noClickCount++;
+      const yesBtn = document.getElementById('yesBtn');
+      const noBtn = document.getElementById('noBtn');
+      const hint = document.getElementById('hintText');
 
-    function showLoveAndRedirect() {
-      showLove();
-      setTimeout(() => {
-        window.location.href = "second.html";
-      }, 2800);
-    }
+      // Grow Oui button
+      yesScale = Math.min(yesScale + 0.25, 2.8);
+      yesBtn.style.transform = `scale(${yesScale})`;
+      yesBtn.style.zIndex = 20;
 
-    function showLove() {
-      document.getElementById("overlay").classList.remove("hidden");
-      document.getElementById("loveModal").classList.remove("hidden");
+      // Shrink Non slightly
+      const noScale = Math.max(1 - (noClickCount * 0.08), 0.6);
+      noBtn.style.transform = `scale(${noScale})`;
 
-      document.getElementById("loveMusic").play();
+      // Change hint text
+      hint.textContent = noMessages[Math.min(noClickCount - 1, noMessages.length - 1)];
+      hint.style.opacity = 1;
 
-      if (navigator.vibrate) {
-        navigator.vibrate([300, 100, 300]);
+      // Change Oui text playfully after 3 clicks
+      if (noClickCount >= 3) {
+        yesBtn.innerHTML = 'ALLEZ OUI ! 💛✨';
       }
-
-      startAnimations();
+      if (noClickCount >= 5) {
+        yesBtn.innerHTML = 'CLIQUE ICI ! 🥹💛';
+        noBtn.innerHTML = 'Non... 😔';
+      }
     }
 
-    function startAnimations() {
-      const container = document.getElementById("animations");
+    // ===== OUI BUTTON CLICK (Success) =====
+    function acceptFriendship() {
+      const modal = document.getElementById('successModal');
+      const audio = document.getElementById('friendMusic');
+      
+      modal.classList.add('active');
+      
+      // Try playing audio (requires user interaction first, which we have)
+      audio.volume = 0.4;
+      audio.play().catch(() => {});
 
-      const interval = setInterval(() => {
-        const el = document.createElement("div");
-        el.className = "float";
-        el.innerText = Math.random() > 0.5 ? "❤️" : "🌹";
-        el.style.left = Math.random() * 100 + "%";
-        el.style.fontSize = (Math.random() * 20 + 20) + "px";
-        el.style.animationDuration = (Math.random() * 3 + 3) + "s";
+      // Vibrate on mobile
+      if (navigator.vibrate) navigator.vibrate([100, 50, 100, 50, 200]);
 
-        container.appendChild(el);
-        setTimeout(() => el.remove(), 6000);
-      }, 250);
+      // Launch confetti
+      launchConfetti();
+    }
 
-      setTimeout(() => clearInterval(interval), 2500);
+    function closeModal() {
+      document.getElementById('successModal').classList.remove('active');
+      // You can redirect here if needed:
+      // window.location.href = "welcome.html";
+    }
+
+    // ===== CONFETTI GENERATOR =====
+    function launchConfetti() {
+      const container = document.getElementById('confettiContainer');
+      const colors = ['#FFD166', '#A8DADC', '#BDB2FF', '#FF9F9F', '#9BF6FF', '#FFB703', '#F15BB5'];
+      
+      for (let i = 0; i < 80; i++) {
+        const conf = document.createElement('div');
+        conf.className = 'confetti';
+        conf.style.left = Math.random() * 100 + '%';
+        conf.style.top = '-10px';
+        conf.style.background = colors[Math.floor(Math.random() * colors.length)];
+        conf.style.width = (Math.random() * 6 + 4) + 'px';
+        conf.style.height = (Math.random() * 10 + 6) + 'px';
+        conf.style.animationDuration = (Math.random() * 2 + 2) + 's';
+        conf.style.animationDelay = (Math.random() * 1) + 's';
+        conf.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+        container.appendChild(conf);
+        setTimeout(() => conf.remove(), 4000);
+      }
     }
   </script>
 </body>
